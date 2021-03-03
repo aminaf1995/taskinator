@@ -5,6 +5,8 @@ var tasksToDoEl = document.querySelector("#tasks-to-do");
 var tasksInProgressEl = document.querySelector("#tasks-in-progress");
 var tasksCompletedEl = document.querySelector("#tasks-completed");
 var pageContentEl = document.querySelector("#page-content");
+
+//create array tht holds tasks for saving
 var tasks = [];
 
 var taskFormHandler = function (event) {
@@ -42,8 +44,6 @@ if (isEdit) {
 };
 
 var createTaskE1 = function(taskDataObj) {
-console.log(taskDataObj);
-console.log(taskDataObj.status);
 // create list item
 var listItemEl = document.createElement("li");
 listItemEl.className = "task-item";
@@ -59,9 +59,13 @@ var taskActionsEl = createTaskActions(taskIdCounter);
 listItemEl.appendChild(taskActionsEl);
 tasksToDoEl.appendChild(listItemEl); 
 
+// save task as an object wth name, type, status, id properties then push to the task array
 taskDataObj.id = taskIdCounter;
 
 tasks.push(taskDataObj);
+
+//save tasks to locaStorage
+saveTasks();
 
 // increase task counter for next unique id 
 taskIdCounter++;
@@ -127,6 +131,8 @@ alert("Task Updated!");
 formEl.removeAttribute("data-task-id");
 // update formEl button to go back to saying "Add Task" instead of "Edit Task"
 formEl.querySelector("#save-task").textContent = "Add Task";
+//save tasks to localStorage
+saveTasks();
 };
 
 // add event fucntion
@@ -149,7 +155,6 @@ var taskButtonHandler = function(event) {
 
   // change staus of items
   var taskStatusChangeHandler = function(event) {
-    console.log(event.target.value);
   
     // find task list item based on event.target's data-task-id attribute
     var taskId = event.target.getAttribute("data-task-id");
@@ -173,6 +178,8 @@ var taskButtonHandler = function(event) {
         }
       }
       console.log(tasks);
+      //save to localStorage
+      saveTasks();
   };
 
 // add edit function
@@ -217,8 +224,13 @@ var deleteTask = function(taskId) {
     } 
     //reassign task array to be the same as updatedTaskArr
     tasks = updatedTaskArr;
+    saveTasks();
 };
 
+// create save task function
+var saveTasks = function() {
+localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
 //create a new task
 formEl.addEventListener("submit", taskFormHandler);
